@@ -1,6 +1,5 @@
 ---
 resource_group_name: "test"
-# Change to Singapore Region
-location: eastus
-aks_name: myAKSCluster
-username: azureuser
+location: "eastus"
+aks_name: "myAKSCluster"
+username: "azureuser"
