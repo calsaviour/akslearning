@@ -1,0 +1,31 @@
+# sample yaml to create a deployment in kubernetes
+
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ tier }}
+  labels:
+    app: {{ app_name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ app_name }}
+      tier: {{ tier }}
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: {{ app_name }}
+        tier: {{ tier }}
+    spec:
+      containers:
+        - name: simple-go
+          image: {{ image }}
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          env:
+            - name: GET_HOSTS_FROM
+          ports:
+            - containerPort: 8080

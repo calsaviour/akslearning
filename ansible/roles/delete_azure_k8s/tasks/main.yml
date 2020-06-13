@@ -1,0 +1,6 @@
+---
+  - name: Delete AKS
+    azure_rm_aks:
+      name: "{{ aks_name }}"
+      resource_group: "{{ resource_group }}"
+      state: absent

@@ -1,0 +1,11 @@
+- name: Start k8s application deployment
+  hosts: localhost
+  vars_files:
+    - "group_vars/all/common_vars.yml"
+    - "group_vars/{{ env }}/app_vars.yml"
+  connection: local
+
+  roles:
+    - role: k8s_app
+      tags:
+        - k8s_app

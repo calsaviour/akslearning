@@ -1,0 +1,6 @@
+- name: "...delete aks using az cli"
+  shell: >
+        az aks delete \
+          --resource-group {{ resource_group }} \
+          --name {{ aks_name }} \
+          --yes

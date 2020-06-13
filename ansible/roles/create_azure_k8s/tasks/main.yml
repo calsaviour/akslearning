@@ -4,19 +4,20 @@
   #   register: previous_restore_namespace
   #   ignore_errors: true
   #   tags: [ postgres, restore_db]
-  
   # - debug:
   #     var: previous_restore_namespace
 
   - name: Create resource group
     azure_rm_resourcegroup:
       name: "{{ resource_group }}"
-      location: "{{ location }}"
+      location: "{{ aks_location }}"
 
   - name: Create a managed Azure Container Services (AKS) cluster
+    ignore_errors: yes
     azure_rm_aks:
       name: "{{ aks_name }}"
-      location: "{{ location }}"
+      location: "{{ aks_location }}"
+      kubernetes_version: "{{ k8s_version }}"
       resource_group: "{{ resource_group }}"
       dns_prefix: "{{ aks_name }}"
       linux_profile:
@@ -32,19 +33,20 @@
       tags:
         Environment: Production
 
-  - name: Scale created Azure Container Services (AKS) cluster
-    azure_rm_aks:
-      name: "{{ aks_name }}"
-      location: "{{ location }}"
-      resource_group: "{{ resource_group }}"
-      dns_prefix: "{{ aks_name }}"
-      linux_profile:
-        admin_username: "{{ username }}"
-        ssh_key: "{{ ssh_key }}"
-      service_principal:
-        client_id: "{{ client_id }}"
-        client_secret: "{{ client_secret }}"
-      agent_pool_profiles:
-        - name: default
-          count: 3
-          vm_size: Standard_D2_v2
+  # - name: Scaling an existed AKS cluster
+  #   azure_rm_aks:
+  #       name: "{{ aks_name }}"
+  #       location: "{{ aks_location }}"
+  #       kubernetes_version: "{{ k8s_version }}"
+  #       resource_group: "{{ resource_group }}"
+  #       dns_prefix: "{{ aks_name }}"
+  #       linux_profile:
+  #         admin_username: "{{ username }}"
+  #         ssh_key: "{{ ssh_key }}"
+  #       service_principal:
+  #         client_id: "{{ client_id }}"
+  #         client_secret: "{{ client_secret }}"
+  #       agent_pool_profiles:
+  #         - name: default
+  #           count: 3
+  #           vm_size: Standard_D2_v2

@@ -1,0 +1,38 @@
+- name: Create resource group
+  azure_rm_resourcegroup:
+    name: "{{ resource_group }}"
+    location: "{{ aks_location }}"
+
+- name: "...create aks using az cli"
+  shell: >
+        az aks create \
+          --resource-group {{ resource_group }} \
+          --name {{ aks_name }} \
+          --node-count 1 \
+          --enable-cluster-autoscaler \
+          --no-ssh-key \
+          --min-count {{ min_count }} \
+          --max-count {{ max_count }} \
+          --kubernetes-version {{ k8s_version }} \
+          --zones 1 2 3
+  register: create_aks
+
+- name: "...enable autoscaling"
+  shell: >
+        az aks update \
+          --resource-group {{ resource_group }} \
+          --name {{ aks_name }} \
+          --enable-cluster-autoscaler \
+          --min-count {{ min_count }} \
+          --max-count {{ max_count }}
+  register: create_aks
+
+- name: "...update aks using az cli"
+  shell: >
+        az aks update \
+          --resource-group {{ resource_group }} \
+          --name {{ aks_name }} \
+          --update-cluster-autoscaler \
+          --min-count {{ min_count }} \
+          --max-count {{ new_max_count }}
+  register: create_aks

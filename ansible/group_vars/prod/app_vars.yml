@@ -1,0 +1,2 @@
+application_loadbalancer_ip: ""
+app_namespace: "app-prod"

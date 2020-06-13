@@ -1,0 +1,13 @@
+- name: Create Azure Kubernetes Service
+  hosts: localhost
+  vars_files:
+    - "group_vars/all/common_vars.yml"
+    - "group_vars/all/common_vars.vault.yml"
+  connection: local
+
+  roles:
+    - role: az_cli_create
+      ssh_key: "{{ common_vault.ssh_key }}"
+      resource_group: "{{ resource_group_name }}"
+      client_id: "{{ lookup('env', 'AZURE_CLIENT_ID') }}"
+      client_secret: "{{ lookup('env', 'AZURE_CLIENT_SECRET') }}"

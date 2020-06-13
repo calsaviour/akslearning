@@ -32,7 +32,7 @@ And a service principal:
 >
 > Secret: (to be provided by email)
 
-It is suggested to use cloud shell, and, once in cloud shell, automation to deploy a cluster. But you can also other approaches as long as they are representative of a DevOps approach. 
+It is suggested to use cloud shell, and, once in cloud shell, automation to deploy a cluster. But you can also other approaches as long as they are representative of a DevOps approach.
 
 We're proposing the following ansible playbook:
 
@@ -44,7 +44,7 @@ We're proposing the following ansible playbook:
 # It also requires a valid service principal to create AKS cluster, so fill:
 # - client_id
 # - client_secret
-# This sample requires Ansible 2.6 
+# This sample requires Ansible 2.6
 
 - name: Create Azure Kubernetes Service
   hosts: localhost
@@ -127,9 +127,12 @@ default.
     eviction of some of our pods. We would want to prevent this from
     happening, especially to pods providing critical services.
 
+    Calvin : 1 .https://www.youtube.com/watch?v=xjpHggHKm78
+             2. Taints Tolerations vs Node Affinity
+
 -   We are in Singapore, and we want to be sure to cater for sovereignity issues.
 
--   We are not sure what the RSA key is for. 
+-   We are not sure what the RSA key is for.
 
 -   We would also like to choose proper names for the cluster and the
     group of resources.
@@ -138,8 +141,12 @@ default.
     would like the cluster to have a minimum of three nodes, but be able
     to grow.
 
+    Calvin : https://docs.microsoft.com/en-us/azure/aks/cluster-autoscaler
+
 -   We would like to build more resilience to our cluster and we're
     thinking of availability zones.
+
+    Calvin : https://docs.microsoft.com/en-us/azure/aks/cluster-autoscaler
 
 What are your recommendations? We would like some quick and easy
 solutions for a start. Include one or more of such solutions into your
@@ -328,7 +335,7 @@ metadata:
     tier: frontend
 spec:
   # comment or delete the following line if you want to use a LoadBalancer
-  type: NodePort 
+  type: NodePort
   # if your cluster supports it, uncomment the following to automatically create
   # an external load-balanced IP for the frontend service.
   # type: LoadBalancer
@@ -346,7 +353,7 @@ Now the service should be accessible through the internet. We should be able to 
 
 If you have a problem: check that the ports are right. Map the ports accordingly.
 
-To upload the container in the kubernetes cluster you can choose to store it in dockerhub or any other way you see fit. 
+To upload the container in the kubernetes cluster you can choose to store it in dockerhub or any other way you see fit.
 
 Entry points are important.
 
@@ -366,3 +373,13 @@ Testing this exercise on 12th June 2020, an issue was found for the specific cas
   - the azure_rm_aks controller is using a function, `time.clock()` that was removed in python 3.8. (no backwards compatibility from 3.7 to 3.8 python, can you believe it? kindly use a superior language such as java or go instead -okay kotlin too-)
   - can be sorted out by editing `/usr/local/lib/python3.8/site-packages/azure/cli/core/_session.py` line 37 and replacing `time.clock()` with `time.process_time()`
   - the problem only happens when you run a playbook in a Mac with this specific controller, if you run it in azure cloud shell, which is the recommendation above, you find all the right versions and dependencies installed
+
+  - Issue faced
+  https://github.com/Azure/azure_preview_modules/issues/338
+  Quick fix, look for the function
+  `def create_aks_dict(aks)`
+  comment out line 304
+  `# addon=create_addon_dict(aks.addon_profiles),`
+  of
+  `/usr/local/anaconda3/envs/python38/lib/python3.8/site-packages/ansible/modules/cloud/azure/azure_rm_aks.py`
+

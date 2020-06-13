@@ -3,7 +3,9 @@
 VNUM=1.0.0
 USERNAME=null
 PASSWORD=null
-SUBSCRIPTION="DEMO_LAB"
+RESOURCE_GROUP="demoAKSLab"
+CLUSTER_NAME="myAKSCluster"
+SUBSCRIPTION="Pay-As-You-Go"
 
 function usage {
     echo "Usage:"

@@ -1,0 +1,10 @@
+- name: Delete Azure Kubernetes Service
+  hosts: localhost
+  vars_files:
+    - "group_vars/all/common_vars.yml"
+    - "group_vars/all/common_vars.vault.yml"
+  connection: local
+
+  roles:
+    - role: delete_azure_k8s
+      resource_group: "{{ resource_group_name }}"

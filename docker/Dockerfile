@@ -2,8 +2,13 @@
 
 FROM golang:latest
 
+RUN mkdir -p /app
+
 WORKDIR /app
 
-COPY ./ /app
+COPY /app/thalestest.go /app
 
-RUN go run thalestest.go
+EXPOSE 8080
+
+# RUN go run thalestest.go
+CMD go run thalestest.go

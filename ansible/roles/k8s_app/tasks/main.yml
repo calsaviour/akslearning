@@ -1,0 +1,55 @@
+---
+  - name: "...ansible create directory"
+    file:
+      path: '{{ path }}/{{ item }}'
+      state: directory
+    with_items: ["deployment"]
+
+  - name: "...copy template files dir"
+    template:
+      src: "{{ item.src }}"
+      mode: "{{ item.mode }}"
+      dest: "{{ item.dest }}"
+    with_items:
+            - {src: 'deployment.yml.j2',mode: '0640', dest: '{{ path }}/deployment.yml'}
+            - {src: 'service.yml.j2', mode: '0640', dest: '{{ path }}/service.yml'}
+            - {src: 'hpa.yml.j2', mode: '0640', dest: '{{ path }}/hpa.yml'}
+    tags: [ 'app', 'loadbalancer' ]
+
+  - name: "Check if {{ app_namespace }} namespace is already existing"
+    shell: kubectl get namespaces | grep {{ app_namespace }} | wc -l
+    register: check_app_ns
+    ignore_errors: true
+    tags: [ 'app' ]
+
+  - name: "...create app namespace"
+    shell: kubectl create namespace {{ app_namespace }}
+    when: check_app_ns.stdout|int == 0
+    tags: [ 'app' ]
+
+  - name: "...set up deployment.yml"
+    shell: kubectl apply -f {{ path }}/deployment.yml -n {{ app_namespace }}
+    tags: [ 'app', 'loadbalancer' ]
+
+  - name: "...set up service.yml"
+    shell: kubectl apply -f {{ path }}/service.yml -n {{ app_namespace }}
+    tags: [ 'app', 'loadbalancer' ]
+
+  - name: "...set up hpa.yml"
+    shell: kubectl autoscale deployment {{ tier }} -n {{ app_namespace }} --cpu-percent=50 --min=2 --max=10
+    tags: [ 'app', 'loadbalancer' ]
+
+  # - name: "...check how many app pods are created"
+  #   shell: kubectl get pods -n { {app_namespace }} | grep app | wc -l
+  #   register: app_pods
+  #   tags: [ 'app' ]
+  #   when: not ansible_check_mode
+
+  # - name: "...check if app is in Running state"
+  #   shell: kubectl describe app { {app_namespace }} -n { {app_namespace }} | grep Running | wc -l
+  #   register: app_running
+  #   until: (app_running.stdout|int == 1)
+  #   retries: 1000
+  #   delay: 10
+  #   tags: [ 'app' ]
+  #   when: not ansible_check_mode

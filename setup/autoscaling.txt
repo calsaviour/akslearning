@@ -1,0 +1,50 @@
+#nodepool scale
+az aks nodepool scale --resource-group DTASK --cluster-name dt --name agentpool --node-count 3 --no-wait
+az aks scale --resource-group DTASK -n dt --nodepool-name agentpool --node-count 3 --no-wait
+
+#enable autoscaler:
+https://docs.microsoft.com/en-us/azure/aks/cluster-autoscaler#use-the-cluster-autoscaler-with-multiple-node-pools-enabled
+az aks nodepool update --resource-group DTASK --cluster-name dt--name agentpool --enable-cluster-autoscaler --min-count 1 --max-count 5
+
+#manually scale pods
+az aks scale --resource-group DTASK --name dt --node-count 3
+
+#Horizontal Pod Autoscaler
+https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+
+<?php
+  $x = 0.0001;
+  for ($i = 0; $i <= 1000000; $i++) {
+    $x += sqrt($x);
+  }
+  echo "OK!";
+?>
+
+#horizontal pod scale sample
+kubectl apply -f https://k8s.io/examples/application/php-apache.yaml
+kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=10
+kubectl get hpa
+kubectl run -i --tty load-generator --image=busybox /bin/sh
+while true; do wget -q -O- http://php-apache.default.svc.cluster.local; done
+kubectl get deployment php-apache
+kubectl get hpa
+kubectl delete hpa
+kubectl get hpa.v2beta2.autoscaling -o yaml > hpa-v2.yaml
+
+#KEDA with simple function
+host.js
+ "extensionBundle": {
+        "id": "Microsoft.Azure.Functions.ExtensionBundle",
+        "version": "[1.*, 2.0.0)"
+    }
+func kubernetes install --namespace keda
+func kubernetes deploy --name hello-keda --registry bvrhovnik
+kubectl get pods -w
+kubectl get deploy
+kubectl delete deploy hello-keda
+kubectl delete ScaledObject hello-keda
+kubectl delete Secret hello-keda
+func kubernetes remove --namespace keda
+
+#enable add-on
+az aks install-connector --resource-group DTASK --name dt --connector-name virtual-kubelet-win --os-type Windows
