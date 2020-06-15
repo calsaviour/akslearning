@@ -6,7 +6,7 @@
   connection: local
 
   roles:
-    - role: az_cli_create
+    - role: az_cli
       ssh_key: "{{ common_vault.ssh_key }}"
       resource_group: "{{ resource_group_name }}"
       client_id: "{{ lookup('env', 'AZURE_CLIENT_ID') }}"
