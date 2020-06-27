@@ -8,7 +8,7 @@ RUN go build -o thalestest .
 
 FROM alpine
 WORKDIR /app
-COPY --from builder /go/src/app /app/
+COPY --from=builder /go/src/app /app/
 EXPOSE 8080
 
 # RUN go run thalestest.go
