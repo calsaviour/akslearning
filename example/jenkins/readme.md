@@ -1,0 +1,1 @@
+https://docs.cloudbees.com/docs/cloudbees-core/latest/cloud-reference-architecture/ra-for-aks/
