@@ -35,8 +35,8 @@ kubectl get pods -n app-prod
 Build Dockerfile
 ```
 cd docker
-docker build -t calsaviour/thalestest:thalestest .
-docker run -p 8080:8080 -d -t calsaviour/thalestest:thalestest
+docker build -t calsaviour/akslearning:latest .
+docker run -p 8080:8080 -d -t calsaviour/akslearning:latest
 
 http://localhost:8080
 http://localhost:8080/ip/
